@@ -8,19 +8,23 @@ c.fillRect(0,0,canvas.width,canvas.height)
 
 const gravity = 0.5
 class Sprite {
-    constructor({position, velocity, color = 'red'}){
+    constructor({position, velocity, color = 'red', offset}){
         this.position = position
         this.velocity = velocity
         this.width = 10
         this.height = 150
         this.lastKey
         this.attackBox = {
-            position: this.position,
+            position: {
+                x: this.position.x,
+                y: this.position.y,
+            },
+            offset,
             width: 100,
             height: 50
         }
         this.color = color
-        this.isAttacking
+        this.isAttacking = false
     }
 
     draw() {
@@ -28,17 +32,22 @@ class Sprite {
         c.fillRect(this.position.x, this.position.y, 50, 150)
 
         //Draw attack box
-        c.fillStyle = 'green'
-        c.fillRect(
-            this.attackBox.position.x,
-            this.attackBox.position.y,
-            this.attackBox.width,
-            this.attackBox.height
-            )
+        // if(this.isAttacking) {
+            c.fillStyle = 'green'
+            c.fillRect(
+                this.attackBox.position.x,
+                this.attackBox.position.y,
+                this.attackBox.width,
+                this.attackBox.height
+                )
+        // }
     }
 
     update() {
         this.draw()
+        this.attackBox.position.x = this.position.x + this.attackBox.offset.x
+        this.attackBox.position.y = this.position.y
+
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
         if(this.position.y + this.height + this.velocity.y >= canvas.height) {
@@ -50,6 +59,7 @@ class Sprite {
 
     attack(){
         this.isAttacking = true
+        console.log('attack true')
         setTimeout(() => {
             this.isAttacking = false
         }, 100)
@@ -65,7 +75,11 @@ const player = new Sprite({
     velocity: {
         x: 0,
         y: 10
-    }
+    },
+    offset: {
+        x: 0,
+        y: 0,
+    },
 })
 
 player.draw()
@@ -78,6 +92,10 @@ const opponent = new Sprite({
     velocity: {
         x: 0,
         y: 10
+    },
+    offset: {
+        x: -50,
+        y: 0,
     },
     color: 'blue'
 })
@@ -107,6 +125,18 @@ const keys = {
     }
 }
 
+function rectangularCollision({
+    rectangle1,
+    rectangle2
+}) {
+ 
+    return (
+        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
+        rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
+        rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
+        rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height)
+}
+
 function animate() {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
@@ -131,13 +161,24 @@ function animate() {
         opponent.velocity.x = 5
     }
 
-    //Detect for collision
-    if(player.attackBox.position.x + player.attackBox.width >= opponent.position.x
-        && player.attackBox.position.x <= opponent.position.x + opponent.width
-        && player.attackBox.position.y + player.attackBox.height >= opponent.position.y
-        && player.attackBox.position.y <= opponent.position.y + opponent.height
+    //Detect for collision (Player)
+    if(rectangularCollision({
+        rectangle1: player,
+        rectangle2: opponent
+    })
         && player.isAttacking){
-        console.log('collision')
+        player.isAttacking = false
+        console.log('Player hits the opponent!')
+    }
+
+    //Detect for collision (Opponent)
+    if(rectangularCollision({
+        rectangle1: opponent,
+        rectangle2: player
+    })
+        && opponent.isAttacking){
+        opponent.isAttacking = false
+        console.log('Opponent hits the player!')
     }
 }
 
@@ -173,8 +214,10 @@ window.addEventListener('keydown', (event) => {
             keys.ArrowUp.pressed = true
             opponent.lastKey = 'ArrowUp'
             break
+        case 'ArrowDown':
+            opponent.attack()
+            break 
     }
-    console.log(event.key)
 })
 
 window.addEventListener('keyup', (event) => {
