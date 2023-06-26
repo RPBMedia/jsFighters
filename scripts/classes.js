@@ -1,13 +1,15 @@
+//Sprite class, for static image assets
 class Sprite {
-    constructor({position,}){
+    constructor({position, imageSrc}){
         this.position = position
         this.width = 10
         this.height = 150
-
+        this.image = new Image()
+        this.image.src = imageSrc
     }
 
     draw() {
-
+        c.drawImage(this.image, this.position.x, this.position.y)
     }
 
     update() {
@@ -15,6 +17,7 @@ class Sprite {
     }
 }
 
+//Fighter class
 class Fighter {
     constructor({position, velocity, color = 'red', offset}){
         this.position = position
