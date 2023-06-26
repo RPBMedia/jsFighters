@@ -1,19 +1,47 @@
 //Sprite class, for static image assets
+//FramesMax will apply for sprites that will animate.
 class Sprite {
-    constructor({position, imageSrc}){
+    constructor({position, imageSrc, scale = 1, framesMax = 1}){
         this.position = position
         this.width = 10
         this.height = 150
         this.image = new Image()
         this.image.src = imageSrc
+        this.scale = scale
+        this.framesMax = framesMax
+        //For static sprites, to assure they will always be on the first frame
+        this.framesCurrent = 0
+        this.framesElapsed = 0
+        this.framesHold = 5
     }
 
     draw() {
-        c.drawImage(this.image, this.position.x, this.position.y)
+        c.drawImage(
+            this.image,
+            //crop location and dimensions
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+
+            //draw location and dimensions
+            this.position.x,
+            this.position.y,
+            (this.image.width / this.framesMax) * this.scale,
+            this.image.height * this.scale
+        )
     }
 
     update() {
         this.draw()
+        this.framesElapsed++
+        if(this.framesElapsed % this.framesHold === 0) {
+            if(this.framesCurrent < this.framesMax - 1){
+                this.framesCurrent++
+            } else {
+                this.framesCurrent = 0
+            }
+        }
     }
 }
 
