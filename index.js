@@ -138,6 +138,34 @@ function rectangularCollision({
         rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height)
 }
 
+function determineWinner({player, opponent, timerId}){
+    clearTimeout(timerId)
+    document.querySelector('#displayMatchResult').style.display = 'flex'
+    if(player.health === opponent.health) {
+        document.querySelector('#displayMatchResult').innerHTML = 'Tie'
+    } else if(player.health > opponent.health) {
+        document.querySelector('#displayMatchResult').innerHTML = 'Player 1 Wins!'
+    } else if(opponent.health > player.health) {
+        document.querySelector('#displayMatchResult').innerHTML = 'Player 2 Wins!'
+    }  
+}
+
+//End game based on time
+let timer = 60
+let timerId
+function decreaseTimer() {
+    if(timer > 0){
+        timerId = setTimeout(decreaseTimer, 1000)
+        timer--
+        document.querySelector('#timer').innerHTML = timer
+    } else {
+        
+        determineWinner({player, opponent, timerId})
+    }
+}
+
+decreaseTimer()
+
 function animate() {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
@@ -184,6 +212,11 @@ function animate() {
         player.health -= 20
         document.querySelector('#playerHealth').style.width = player.health + '%'
         console.log('Opponent hits the player! ', player.health)
+    }
+
+    //End game based on health
+    if(opponent.health <= 0 || player.health <= 0) {
+        determineWinner({player, opponent, timerId})
     }
 }
 
