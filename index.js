@@ -30,6 +30,15 @@ const shop = new Sprite({
     framesMax: 6
 })
 
+const lamp = new Sprite({
+    position: {
+        x: 70,
+        y: 340
+    },
+    imageSrc: './assets/lamp.png',
+    scale: 2.5,
+})
+
 const player = new Fighter({
     position:{
         x: 0,
@@ -96,6 +105,7 @@ function animate() {
     c.fillRect(0,0,canvas.width,canvas.height)
     background.update()
     shop.update()
+    lamp.update()
     player.update()
     opponent.update()
 
