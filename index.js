@@ -41,7 +41,7 @@ const lamp = new Sprite({
 
 const player = new Fighter({
     position:{
-        x: 0,
+        x: 200,
         y: 10
     },
     velocity: {
@@ -84,6 +84,14 @@ const player = new Fighter({
             imageSrc: './assets/samuraiMack/Attack2.png',
             framesMax: 6,
         },
+        takeHit: {
+            imageSrc: './assets/samuraiMack/Take Hit - white silhouette.png',
+            framesMax: 4,
+        },
+        death: {
+            imageSrc: './assets/samuraiMack/Death.png',
+            framesMax: 6,
+        },
 
     },
     attackBox: {
@@ -99,7 +107,7 @@ const player = new Fighter({
 
 const opponent = new Fighter({
     position:{
-        x: 400,
+        x: 800,
         y: 100
     },
     velocity: {
@@ -141,6 +149,14 @@ const opponent = new Fighter({
         attack2: {
             imageSrc: './assets/kenji/Attack2.png',
             framesMax: 4,
+        },
+        takeHit: {
+            imageSrc: './assets/kenji/Take Hit.png',
+            framesMax: 3,
+        },
+        death: {
+            imageSrc: './assets/kenji/Death.png',
+            framesMax: 7,
         },
 
     },
@@ -239,9 +255,8 @@ function animate() {
         && player.isAttacking
         && player.framesCurrent === 4){
         player.isAttacking = false
-        opponent.health -= 20
         document.querySelector('#opponentHealth').style.width = opponent.health + '%'
-        console.log('Player hits the opponent!')
+        opponent.takeHit();
     }
 
     //Player misses
@@ -257,9 +272,8 @@ function animate() {
         && opponent.isAttacking
         && opponent.framesCurrent === 2){
         opponent.isAttacking = false
-        player.health -= 20
         document.querySelector('#playerHealth').style.width = player.health + '%'
-        console.log('Opponent hits the player! ', player.health)
+        player.takeHit()
     }
 
     //Opponent misses
@@ -274,40 +288,45 @@ function animate() {
 }
 
 window.addEventListener('keydown', (event) => {
-    switch (event.key) {        
-        case 'd':
-            keys.d.pressed = true
-            player.lastKey = 'd'
-            break
-        case 'a':
-            keys.a.pressed = true
-            player.lastKey = 'a'
-            break
-        case 'w':
-            player.velocity.y = -20
-            keys.w.pressed = true
-            player.lastKey = 'w'
-            break
-        case ' ':
-            player.attack()
-            break
-        
-        case 'ArrowRight':
-            keys.ArrowRight.pressed = true
-            opponent.lastKey = 'ArrowRight'
-            break
-        case 'ArrowLeft':
-            keys.ArrowLeft.pressed = true
-            opponent.lastKey = 'ArrowLeft'
-            break
-        case 'ArrowUp':
-            opponent.velocity.y = -20
-            keys.ArrowUp.pressed = true
-            opponent.lastKey = 'ArrowUp'
-            break
-        case 'ArrowDown':
-            opponent.attack()
-            break 
+    if(!player.dead){
+        switch (event.key) {        
+            case 'd':
+                keys.d.pressed = true
+                player.lastKey = 'd'
+                break
+            case 'a':
+                keys.a.pressed = true
+                player.lastKey = 'a'
+                break
+            case 'w':
+                player.velocity.y = -20
+                keys.w.pressed = true
+                player.lastKey = 'w'
+                break
+            case ' ':
+                player.attack()
+                break
+        }
+    }
+    if(!opponent.dead) {
+        switch (event.key) {
+            case 'ArrowRight':
+                keys.ArrowRight.pressed = true
+                opponent.lastKey = 'ArrowRight'
+                break
+            case 'ArrowLeft':
+                keys.ArrowLeft.pressed = true
+                opponent.lastKey = 'ArrowLeft'
+                break
+            case 'ArrowUp':
+                opponent.velocity.y = -20
+                keys.ArrowUp.pressed = true
+                opponent.lastKey = 'ArrowUp'
+                break
+            case 'ArrowDown':
+                opponent.attack()
+                break 
+        }
     }
 })
 
