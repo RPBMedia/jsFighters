@@ -52,7 +52,7 @@ const player = new Fighter({
         x: 0,
         y: 0,
     },
-    
+    imageSrc: './assets/samuraiMack/Idle.png',
     framesMax: 8,
     scale: 2.5,
     offset: {
@@ -102,7 +102,40 @@ const opponent = new Fighter({
         x: -50,
         y: 0,
     },
-    color: 'blue'
+    imageSrc: './assets/kenji/Idle.png',
+    framesMax: 4,
+    scale: 2.5,
+    offset: {
+        x: 215,
+        y: 167
+    },
+    sprites: {
+        idle: {
+            imageSrc: './assets/kenji/Idle.png',
+            framesMax: 4,  
+        },
+        run: {
+            imageSrc: './assets/kenji/Run.png',
+            framesMax: 8,
+        },
+        jump: {
+            imageSrc: './assets/kenji/Jump.png',
+            framesMax: 2,
+        },
+        fall: {
+            imageSrc: './assets/kenji/Fall.png',
+            framesMax: 2,
+        },
+        attack1: {
+            imageSrc: './assets/kenji/Attack1.png',
+            framesMax: 4,
+        }
+        // attack2: {
+        //     imageSrc: './assets/samuraiMack/Attack2.png',
+        //     framesMax: 6,
+        // },
+
+    }
 })
 
 player.draw()
@@ -141,7 +174,7 @@ function animate() {
     shop.update()
     lamp.update()
     player.update()
-    // opponent.update()
+    opponent.update()
 
     player.velocity.x = 0
     opponent.velocity.x = 0
@@ -167,8 +200,19 @@ function animate() {
     //Opponent movement
     if(keys.ArrowLeft.pressed && opponent.lastKey === 'ArrowLeft'){
         opponent.velocity.x = -5
+        opponent.switchSprite('run')
     } else if (keys.ArrowRight.pressed && opponent.lastKey === 'ArrowRight') {
         opponent.velocity.x = 5
+        opponent.switchSprite('run')
+    } else {
+        opponent.switchSprite('idle')
+    }
+
+    //Opponent jump & fall
+    if(opponent.velocity.y < 0) {
+        opponent.switchSprite('jump')
+    } else if(opponent.velocity.y > 0) {
+        opponent.switchSprite('fall')
     }
 
     //Detect for collision (Player)

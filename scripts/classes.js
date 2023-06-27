@@ -96,6 +96,8 @@ class Fighter extends Sprite{
             sprites[sprite].image = new Image()
             sprites[sprite].image.src = sprites[sprite].imageSrc
         }
+        console.log('sprites')
+        console.log(sprites)
     }
 
 
@@ -130,8 +132,9 @@ class Fighter extends Sprite{
         if(this.image === this.sprites.attack1.image &&
             this.framesCurrent < this.sprites.attack1.framesMax - 1
         )
-            return
+        return
         switch(sprite) {
+           
             case 'idle':
                 if(this.image !== this.sprites.idle.image){
                     this.image = this.sprites.idle.image
@@ -155,9 +158,9 @@ class Fighter extends Sprite{
                 break;
             case 'fall':
                 if(this.image !== this.sprites.fall.image) {
-                    this.image = this.sprites.fall.image
-                    this.framesMax = this.sprites.fall.framesMax
-                    this.framesCurrent = 0
+                    // this.image = this.sprites.fall.image
+                    // this.framesMax = this.sprites.fall.framesMax
+                    // this.framesCurrent = 0
                 }
                 break;
             case 'attack1':
