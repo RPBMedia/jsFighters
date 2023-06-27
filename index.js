@@ -205,6 +205,8 @@ function animate() {
     background.update()
     shop.update()
     lamp.update()
+    c.fillStyle = 'rgba(255,255,255, 0.15)'
+    c.fillRect(0,0,canvas.width, canvas.height)
     player.update()
     opponent.update()
 
@@ -255,7 +257,9 @@ function animate() {
         && player.isAttacking
         && player.framesCurrent === 4){
         player.isAttacking = false
-        document.querySelector('#opponentHealth').style.width = opponent.health + '%'
+        gsap.to('#opponentHealth', {
+           width: opponent.health + '%'
+        })
         opponent.takeHit();
     }
 
@@ -272,7 +276,9 @@ function animate() {
         && opponent.isAttacking
         && opponent.framesCurrent === 2){
         opponent.isAttacking = false
-        document.querySelector('#playerHealth').style.width = player.health + '%'
+        gsap.to('#playerHealth', {
+            width: player.health + '%'
+         })
         player.takeHit()
     }
 
