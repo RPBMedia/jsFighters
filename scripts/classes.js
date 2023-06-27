@@ -60,7 +60,14 @@ class Fighter extends Sprite{
         scale = 1,
         framesMax = 1,
         offset = {x: 0, y: 0},
-        sprites
+        sprites,
+        attackBox = {
+            offset: {
+
+            },
+            width: undefined,
+            height: undefined
+        }
     }){
         super({
             position,
@@ -78,9 +85,9 @@ class Fighter extends Sprite{
                 x: this.position.x,
                 y: this.position.y,
             },
-            offset,
-            width: 100,
-            height: 50
+            offset: attackBox.offset,
+            width: attackBox.width,
+            height: attackBox.height
         }
         this.color = color
         this.isAttacking = false
@@ -106,8 +113,11 @@ class Fighter extends Sprite{
         this.animateFrames()
 
         this.attackBox.position.x = this.position.x + this.attackBox.offset.x
-        this.attackBox.position.y = this.position.y
+        this.attackBox.position.y = this.position.y + this.attackBox.offset.y
 
+        //Test box
+        // c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
+            
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
 
@@ -120,17 +130,25 @@ class Fighter extends Sprite{
         }
     }
 
+
+
     attack(){
-        this.switchSprite('attack1')
+        if(Math.random() < 0.5)
+            this.switchSprite('attack1')
+        else
+            this.switchSprite('attack2')
         this.isAttacking = true
-        setTimeout(() => {
-            this.isAttacking = false
-        }, 100)
+
     }
 
     switchSprite(sprite) {
+        //Exclude attack animations
         if(this.image === this.sprites.attack1.image &&
             this.framesCurrent < this.sprites.attack1.framesMax - 1
+        )
+        return
+        if(this.image === this.sprites.attack2.image &&
+            this.framesCurrent < this.sprites.attack2.framesMax - 1
         )
         return
         switch(sprite) {
@@ -167,6 +185,13 @@ class Fighter extends Sprite{
                 if(this.image !== this.sprites.attack1.image) {
                     this.image = this.sprites.attack1.image
                     this.framesMax = this.sprites.attack1.framesMax
+                    this.framesCurrent = 0
+                }
+                break;
+            case 'attack2':
+                if(this.image !== this.sprites.attack2.image) {
+                    this.image = this.sprites.attack2.image
+                    this.framesMax = this.sprites.attack2.framesMax
                     this.framesCurrent = 0
                 }
                 break; 

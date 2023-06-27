@@ -79,12 +79,20 @@ const player = new Fighter({
         attack1: {
             imageSrc: './assets/samuraiMack/Attack1.png',
             framesMax: 6,
-        }
-        // attack2: {
-        //     imageSrc: './assets/samuraiMack/Attack2.png',
-        //     framesMax: 6,
-        // },
+        },
+        attack2: {
+            imageSrc: './assets/samuraiMack/Attack2.png',
+            framesMax: 6,
+        },
 
+    },
+    attackBox: {
+        offset: {
+            x: 130,
+            y: 50 
+        },
+        width: 100,
+        height: 50
     }
 })
 
@@ -129,12 +137,20 @@ const opponent = new Fighter({
         attack1: {
             imageSrc: './assets/kenji/Attack1.png',
             framesMax: 4,
-        }
-        // attack2: {
-        //     imageSrc: './assets/samuraiMack/Attack2.png',
-        //     framesMax: 6,
-        // },
+        },
+        attack2: {
+            imageSrc: './assets/kenji/Attack2.png',
+            framesMax: 4,
+        },
 
+    },
+    attackBox: {
+        offset: {
+            x: -170,
+            y: 50 
+        },
+        width: 170,
+        height: 50
     }
 })
 
@@ -220,11 +236,17 @@ function animate() {
         rectangle1: player,
         rectangle2: opponent
     })
-        && player.isAttacking){
+        && player.isAttacking
+        && player.framesCurrent === 4){
         player.isAttacking = false
         opponent.health -= 20
         document.querySelector('#opponentHealth').style.width = opponent.health + '%'
         console.log('Player hits the opponent!')
+    }
+
+    //Player misses
+    if(player.isAttacking && player.framesCurrent === 4) {
+        player.isAttacking = false
     }
 
     //Detect for collision (Opponent)
@@ -232,11 +254,17 @@ function animate() {
         rectangle1: opponent,
         rectangle2: player
     })
-        && opponent.isAttacking){
+        && opponent.isAttacking
+        && opponent.framesCurrent === 2){
         opponent.isAttacking = false
         player.health -= 20
         document.querySelector('#playerHealth').style.width = player.health + '%'
         console.log('Opponent hits the player! ', player.health)
+    }
+
+    //Opponent misses
+    if(opponent.isAttacking && opponent.framesCurrent === 2) {
+        opponent.isAttacking = false
     }
 
     //End game based on health
